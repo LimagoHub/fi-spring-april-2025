@@ -1,9 +1,15 @@
 package de.fi.simplespring.math;
 
+
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
+
+@Component
+@Qualifier("logger")
 public class CalculatorLogger implements Calculator{
     private final Calculator calculator;
 
-    public CalculatorLogger(final Calculator calculator) {
+    public CalculatorLogger(final @Qualifier("impl") Calculator calculator) {
         this.calculator = calculator;
     }
 
