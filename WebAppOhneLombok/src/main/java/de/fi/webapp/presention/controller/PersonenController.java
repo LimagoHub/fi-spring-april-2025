@@ -2,6 +2,8 @@ package de.fi.webapp.presention.controller;
 
 
 import de.fi.webapp.presention.dto.PersonDTO;
+import de.fi.webapp.presention.mapper.PersonDTOMapper;
+import de.fi.webapp.service.PersonenService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -22,6 +24,14 @@ import java.util.UUID;
 @RequestMapping
 public class PersonenController {
 
+    private final PersonenService personenService;
+    private final PersonDTOMapper mapper;
+
+    public PersonenController(final PersonenService personenService, final PersonDTOMapper mapper) {
+        this.personenService = personenService;
+        this.mapper = mapper;
+    }
+
     @Operation(summary = "Liefert eine Person")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Person gefunden",
@@ -37,11 +47,8 @@ public class PersonenController {
 
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<PersonDTO> findById(@PathVariable UUID id) {
-
-        if(id.equals(UUID.fromString("12345678-1234-1234-1234-123456789abc")))
-            return ResponseEntity.notFound().build();
-        return ResponseEntity.ok(new PersonDTO(id,"John","Doe"));
+    public ResponseEntity<PersonDTO> findById(@PathVariable UUID id) throws Exception{
+        return ResponseEntity.of(personenService.findeAnhandId(id).map(mapper::convert));
     }
 
 
@@ -49,33 +56,37 @@ public class PersonenController {
     public ResponseEntity<Iterable<PersonDTO>> findAll(
             @RequestParam(required = false, defaultValue = "Max") String vorname,
             @RequestParam(required = false, defaultValue = "Mustermann")String nachname
-    ) {
+    ) throws Exception{
 
         System.out.println( vorname + " " + nachname);
-        var result = List.of(
-                new PersonDTO(UUID.randomUUID(),"John","Doe"),
-                new PersonDTO(UUID.randomUUID(),"Jane","Doe")
-        );
 
-        return ResponseEntity.ok(result);
+
+        return ResponseEntity.ok(mapper.convert(personenService.findeAlle()));
     }
     @PostMapping(path="", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> save(@Valid @RequestBody  PersonDTO personDTO, UriComponentsBuilder builder) {
+    public ResponseEntity<Void> save(@Valid @RequestBody  PersonDTO personDTO, UriComponentsBuilder builder) throws Exception{
+
+        personenService.speichern(mapper.convert(personDTO));
         UriComponents uriComponents = builder.path("/personen/{id}").buildAndExpand(personDTO.getId());
 
-        System.out.println("Person empfangen: " + personDTO);
+
         return ResponseEntity.created(uriComponents.toUri()).build();
     }
 
     @PutMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public  ResponseEntity<Void> aendern(@PathVariable UUID id, @Valid @RequestBody PersonDTO personDto){
+    public  ResponseEntity<Void> aendern(@PathVariable UUID id, @Valid @RequestBody PersonDTO personDto) throws Exception{
         if(! id.equals(personDto.getId())) throw new IllegalArgumentException("Upps");
-        System.out.println("Person geaendert: " + personDto);
+
+        personenService.speichern(mapper.convert(personDto));
+
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping(path = "/{id}")
-    public ResponseEntity<Void> delete(@PathVariable UUID id) {
+    public ResponseEntity<Void> delete(@PathVariable UUID id) throws Exception {
+
+        if(personenService.loeschen(id))
+            return ResponseEntity.ok().build();
         return ResponseEntity.notFound().build();
     }
 

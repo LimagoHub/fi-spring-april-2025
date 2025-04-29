@@ -9,7 +9,7 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface PersonDTOMapper {
 
-    PersonDTO convert(PersonEntity personEntity);
+    PersonDTO convert(Person person);
     Person convert(PersonDTO personDTO);
     Iterable<PersonDTO> convert(Iterable<Person> persons);
 }
