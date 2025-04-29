@@ -1,4 +1,4 @@
-package de.fi.webapp.presention.controller;
+package de.fi.webapp.presention.controller.v1;
 
 
 import de.fi.webapp.presention.dto.PersonDTO;
@@ -11,17 +11,15 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping
+@RequestMapping("/v1/personen")
 public class PersonenController {
 
     private final PersonenService personenService;
@@ -67,7 +65,7 @@ public class PersonenController {
     public ResponseEntity<Void> save(@Valid @RequestBody  PersonDTO personDTO, UriComponentsBuilder builder) throws Exception{
 
         personenService.speichern(mapper.convert(personDTO));
-        UriComponents uriComponents = builder.path("/personen/{id}").buildAndExpand(personDTO.getId());
+        UriComponents uriComponents = builder.path("/v1/personen/{id}").buildAndExpand(personDTO.getId());
 
 
         return ResponseEntity.created(uriComponents.toUri()).build();
