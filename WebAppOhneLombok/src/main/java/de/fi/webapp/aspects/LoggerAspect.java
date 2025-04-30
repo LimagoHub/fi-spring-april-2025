@@ -14,14 +14,15 @@ public class LoggerAspect {
    private System.Logger logger = System.getLogger(LoggerAspect.class.getName());
 
 
+
    // pointcut (sagt an welcher Stelle ein advice eingefuegt wird
-   @Before(value = "execution(public * de.fi.webapp.presention.controller.v1.PersonenController.*(..))")
+   @Before(value= "Pointcuts.personenControllerMethods()")
    public void logAdvice(final JoinPoint joinPoint) {
        logger.log(System.Logger.Level.WARNING, String.format(
                "##################### Methode  %s wurde aufgerufen ########################"
                , joinPoint.getSignature().getName()));
    }
-    @AfterReturning(value = "execution(public * de.fi.webapp.presention.controller.v1.PersonenController.*(..))", returning="result")
+    @AfterReturning(value = "Pointcuts.personenControllerMethods()", returning="result")
     public void logAfterReturningAdvice(final JoinPoint joinPoint, final Object result) {
         logger.log(System.Logger.Level.WARNING, String.format(
                 "##################### Methode  %s wurde erfolgreich beendet ########################"
