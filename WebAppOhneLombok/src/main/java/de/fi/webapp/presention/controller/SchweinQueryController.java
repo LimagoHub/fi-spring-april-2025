@@ -2,6 +2,7 @@ package de.fi.webapp.presention.controller;
 
 
 ;
+import de.fi.webapp.aspects.Dozent;
 import de.fi.webapp.presention.dto.SchweinDTO;
 import de.fi.webapp.presention.mapper.SchweinDTOMapper;
 import de.fi.webapp.service.SchweinService;
@@ -20,7 +21,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/v1/schweine")
 
-
+@Dozent
 
 public class SchweinQueryController {
 
