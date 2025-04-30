@@ -7,6 +7,8 @@ import de.fi.webapp.service.mapper.PersonMapper;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.Scope;
 
 import java.util.List;
 
@@ -15,6 +17,8 @@ public class PersonenConfig {
 
     @Bean
     @Qualifier("blacklist")
+    @Lazy
+    @Scope("singleton")
     public List<String> getBlacklist() {
         return List.of("Attila", "Peter", "Paul", "Mary");
     }
