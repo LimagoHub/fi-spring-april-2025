@@ -2,6 +2,7 @@ package de.fi.webapp.presention.controller.v1;
 
 import de.fi.webapp.presention.dto.PersonDTO;
 import de.fi.webapp.service.PersonenService;
+import de.fi.webapp.service.PersonenServiceException;
 import de.fi.webapp.service.model.Person;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,6 +42,9 @@ class PersonenControllerTest {
     @Test
     void test1() throws Exception{
 
+
+
+
         final Optional<Person> optPerson = Optional.of(new Person(UUID.fromString("86dac2d5-7edc-483a-abc6-239e5b93eb13"), "John", "Doe"));
         when(personenServiceMock.findeAnhandId(any())).thenReturn(optPerson);
 
@@ -53,7 +57,18 @@ class PersonenControllerTest {
     void test2() throws Exception{
 
         final Optional<Person> optPerson = Optional.of(new Person(UUID.fromString("86dac2d5-7edc-483a-abc6-239e5b93eb13"), "John", "Doe"));
+
+        // Recordmode (Nur bei Methoden mit Rueckgabe)
         when(personenServiceMock.findeAnhandId(any())).thenReturn(optPerson);
+
+        // Bei VoidMethode
+        //doNothing().when(personenServiceMock).speichern(any());
+
+        //when(personenServiceMock.findeAnhandId(any())).thenThrow(new PersonenServiceException("Upps"));
+
+        // Bei VoidMethode
+        //doThrow(new PersonenServiceException("Upps")).when(personenServiceMock).speichern(any());
+        // Replay
 
         String ergebnis = restTemplate.getForObject("/v1/personen/86dac2d5-7edc-483a-abc6-239e5b93eb13", String.class);
         System.out.println(ergebnis);
